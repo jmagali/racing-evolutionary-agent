@@ -3,6 +3,7 @@ import os
 import math
 import sys
 import neat
+import time
 from car import Car
 import parameters
 
@@ -35,6 +36,7 @@ def eval_genomes(genomes, config):
         networks.append(net)
         genome.fitness = 0
     
+    # Training loop
     run = True
     
     while run:
@@ -43,13 +45,17 @@ def eval_genomes(genomes, config):
                 pygame.quit()
                 sys.exit()
 
+        # Add the track to the buffer
         WINDOW.blit(TRACK, (0, 0))
         
+        # End generation when no genomes are left
         if len(cars) == 0:
             break
         
+        # Give fitness for positive qualities
         for i, car in enumerate(cars):
             ge[i].fitness += 1
+            # Remove dead genomes
             if not car.sprite.alive:
                 remove(i)
 
@@ -64,6 +70,7 @@ def eval_genomes(genomes, config):
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
 
+        # Update visuals
         for car in cars:
             car.draw(WINDOW)
             car.update()
