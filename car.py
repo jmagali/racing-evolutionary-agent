@@ -32,15 +32,29 @@ class Car (pygame.sprite.Sprite):
         # Misc
         self.alive = True
         self.radars = []
+        self.radar_angles = []
+        
+        self.calculate_radar_angles()
         
     def update (self):
         self.radars.clear()
         self.drive()
         self.rotate()
-        for radar_angle in (-60, -45, -30, 0, 30, 45, 60):
+        
+        for radar_angle in self.radar_angles:
             self.radar(radar_angle)
         self.collision()
         self.data()
+        
+    def calculate_radar_angles (self):
+        increment = 120 // parameters.car_params.radar_count
+        current = -60
+        
+        for i in range(parameters.car_params.radar_count):
+            angle = current + increment
+            current += increment
+            self.radar_angles.append(angle)
+        
         
     def collision (self):   
         length = 45
@@ -65,12 +79,6 @@ class Car (pygame.sprite.Sprite):
             WINDOW.get_at(collision_point_back_right) == pygame.Color(2, 105, 31, 255) or
             WINDOW.get_at(collision_point_back_left) == pygame.Color(2, 105, 31, 255)):
             self.alive = False
-
-        # Draw Collision Points
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_front_right, radius)
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_front_left, radius)
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_back_right, radius)
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_back_left, radius)
         
     def drive (self):
         self.rect.center += self.vel * 5
@@ -95,6 +103,7 @@ class Car (pygame.sprite.Sprite):
         x = int(self.rect.center[0])
         y = int(self.rect.center[1])
 
+        # Extend radars to boundary
         while True:
             x = int(self.rect.center[0] + math.cos(math.radians(self.angle + radar_angle)) * length)
             y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
@@ -122,7 +131,7 @@ class Car (pygame.sprite.Sprite):
         self.radars.append([radar_angle, dist])
         
     def data(self):
-        input = [0] * 7
+        input = [0] * parameters.car_params.radar_count
         
         for i, radar in enumerate(self.radars):
             input[i] = int(radar[1])
