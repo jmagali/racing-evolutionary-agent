@@ -1,5 +1,6 @@
 import pygame
 import os
+import math
 import sys
 
 WIN_WIDTH = 1244
@@ -22,6 +23,8 @@ class Car (pygame.sprite.Sprite):
     def update (self):
         self.drive()
         self.rotate()
+        for radar_angle in (-60, -30, 0, 30, 60):
+            self.radar(radar_angle)
         
     def drive (self):
         if self.drive_state:
@@ -29,16 +32,28 @@ class Car (pygame.sprite.Sprite):
             
     def rotate (self):
         ROTATION = 0.1
-        
         if self.direction == 1:
             self.angle -= self.rotation_vel
             self.vel.rotate_ip(self.rotation_vel)
         if self.direction == -1:
             self.angle += self.rotation_vel
-            self.vel.rotate_ip(self.rotation_vel)
-            
+            self.vel.rotate_ip(-self.rotation_vel)
         self.image = pygame.transform.rotozoom(self.org_img, self.angle, ROTATION)
         self.rect = self.image.get_rect(center=self.rect.center)
+        
+    def radar(self, radar_angle):
+        length = 0
+        x = int(self.rect.center[0])
+        y = int(self.rect.center[1])
+
+        while not WINDOW.get_at((x, y)) == pygame.Color(2, 105, 31, 255) and length < 200:
+            length += 1
+            x = int(self.rect.center[0] + math.cos(math.radians(self.angle  + radar_angle)) * length)
+            y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
+
+        # Draw Radar
+        pygame.draw.line(WINDOW, (255, 255, 255, 255), self.rect.center, (x, y), 1)
+        pygame.draw.circle(WINDOW, (0, 255, 0, 0), (x, y), 3)
     
 car = pygame.sprite.GroupSingle(Car())
 
