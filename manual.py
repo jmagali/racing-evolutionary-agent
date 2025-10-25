@@ -3,11 +3,17 @@ import os
 import math
 import sys
 from car import Car
+import parameters
 
-WIN_WIDTH = 1244
-WIN_HEIGHT = 1016
-WINDOW = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-TRACK = pygame.image.load(os.path.join("assets", "track.png"))        
+# Window
+global WIN_WIDTH
+global WIN_HEIGHT
+global WINDOW
+    
+WIN_WIDTH = parameters.window_params.width
+WIN_HEIGHT = parameters.window_params.height
+WINDOW = parameters.window_params.window   
+TRACK = parameters.window_params.track      
     
 car = pygame.sprite.GroupSingle(Car())
 

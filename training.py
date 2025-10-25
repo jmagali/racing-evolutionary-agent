@@ -4,11 +4,17 @@ import math
 import sys
 import neat
 from car import Car
+import parameters
 
-WIN_WIDTH = 1244
-WIN_HEIGHT = 1016
-WINDOW = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-TRACK = pygame.image.load(os.path.join("assets", "track.png"))        
+# Window
+global WIN_WIDTH
+global WIN_HEIGHT
+global WINDOW
+    
+WIN_WIDTH = parameters.window_params.width
+WIN_HEIGHT = parameters.window_params.height
+WINDOW = parameters.window_params.window   
+TRACK = parameters.window_params.track
     
 def remove(index):
     cars.pop(index)
@@ -22,7 +28,7 @@ def eval_genomes(genomes, config):
     ge = []
     networks = []
     
-    for genome_id, genome in genomes:
+    for _, genome in genomes:
         cars.append(pygame.sprite.GroupSingle(Car()))
         ge.append(genome)
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -51,8 +57,10 @@ def eval_genomes(genomes, config):
             output = networks[i].activate(car.sprite.data())
             if output[0] > 0.7:
                 car.sprite.direction = 1
+                ge[i].fitness += 0.3
             if output[1] > 0.7:
                 car.sprite.direction = -1
+                ge[i].fitness += 0.3
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
 
