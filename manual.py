@@ -1,5 +1,4 @@
 import pygame
-import neat
 import game
 import sys
 
@@ -12,4 +11,6 @@ def eval_genomes():
                 pygame.quit()
                 sys.exit()
 
-        SCREEN.blit(TRACK, (0, 0))
+        window.blit(TRACK, (0, 0))
+        
+        user_input = pygame.key.get_pressed()
