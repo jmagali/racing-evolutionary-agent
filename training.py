@@ -32,7 +32,7 @@ class Car (pygame.sprite.Sprite):
         self.data()
         
     def collision (self):
-        length = 40
+        length = 45
         collision_point_right = [int(self.rect.center[0] + math.cos(math.radians(self.angle + 18)) * length),
                                  int(self.rect.center[1] - math.sin(math.radians(self.angle + 18)) * length)]
         collision_point_left = [int(self.rect.center[0] + math.cos(math.radians(self.angle - 18)) * length),
@@ -160,7 +160,7 @@ def run (config_path):
 
     pop.run(eval_genomes, GENERATAIONS)
     
-local_dir = os.path.dirname(__file__)
-config_path = os.path.join(local_dir, 'config.txt')
-run(config_path)
-        
+if __name__ == '__main__':
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, 'config.txt')
+    run(config_path)
