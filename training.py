@@ -21,10 +21,14 @@ def remove(index):
     cars.pop(index)
     ge.pop(index)
     networks.pop(index)
-    
+
 def eval_genomes(genomes, config):
+    from menu import main_menu
+    from menu import get_font
+    from button import Button
+
     global cars, ge, networks
-    
+
     cars = []
     ge = []
     networks = []
@@ -35,15 +39,17 @@ def eval_genomes(genomes, config):
         net = neat.nn.FeedForwardNetwork.create(genome, config)
         networks.append(net)
         genome.fitness = 0
-    
-    # Training loop
+
     run = True
-    
+
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
 
         # Add the track to the buffer
         WINDOW.blit(TRACK, (0, 0))
@@ -74,13 +80,21 @@ def eval_genomes(genomes, config):
         for car in cars:
             car.draw(WINDOW)
             car.update()
-        
+
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        OPTIONS_BACK = Button(image=None, pos=(75, 50), text_input="BACK", font=get_font(25), base_color="Black",
+                              hovering_color="Green")
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(WINDOW)
+
         pygame.display.update()
-        
+
 def run (config_path):
     global pop
     GENERATAIONS = 50
-    
+
     config = neat.config.Config(
         neat.DefaultGenome,
         neat.DefaultReproduction,
@@ -97,7 +111,7 @@ def run (config_path):
 
     pop.run(eval_genomes, GENERATAIONS)
     
-if __name__ == '__main__':
+def play_training():
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config.txt')
     run(config_path)
