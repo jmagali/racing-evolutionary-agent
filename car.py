@@ -3,49 +3,82 @@ import os
 import math
 import sys
 import neat
-
-WIN_WIDTH = 1244
-WIN_HEIGHT = 1016
-WINDOW = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-TRACK = pygame.image.load(os.path.join("assets", "track.png"))        
+import parameters
         
 class Car (pygame.sprite.Sprite):
+    # Window
+    global WIN_WIDTH
+    global WIN_HEIGHT
+    global WINDOW
+    
+    WIN_WIDTH = parameters.window_params.width
+    WIN_HEIGHT = parameters.window_params.height
+    WINDOW = parameters.window_params.window
+    
     def __init__ (self):
         super().__init__()
+        
+        # Visuals
         self.org_img = pygame.image.load(os.path.join("assets", "car.png"))
         self.image = self.org_img
         self.rect = self.image.get_rect(center=(490, 820))
-        self.vel = pygame.math.Vector2(0.8, 0)
+        
+        # Movement
+        self.vel = pygame.math.Vector2(parameters.car_params.velocity, 0)
         self.angle = 0
-        self.rotation_vel = 5
+        self.rotation_vel = parameters.car_params.rotation_vel
         self.direction = 0
+        
+        # Misc
         self.alive = True
         self.radars = []
+        self.radar_angles = []
+        
+        self.calculate_radar_angles()
         
     def update (self):
         self.radars.clear()
         self.drive()
         self.rotate()
-        for radar_angle in (-60, -45, -30, 0, 30, 45, 60):
+        
+        for radar_angle in self.radar_angles:
             self.radar(radar_angle)
         self.collision()
         self.data()
         
-    def collision (self):
+    def calculate_radar_angles (self):
+        increment = 120 // parameters.car_params.radar_count
+        current = -60
+        
+        for i in range(parameters.car_params.radar_count):
+            angle = current + increment
+            current += increment
+            self.radar_angles.append(angle)
+        
+        
+    def collision (self):   
         length = 45
-        collision_point_right = [int(self.rect.center[0] + math.cos(math.radians(self.angle + 18)) * length),
-                                 int(self.rect.center[1] - math.sin(math.radians(self.angle + 18)) * length)]
-        collision_point_left = [int(self.rect.center[0] + math.cos(math.radians(self.angle - 18)) * length),
-                                int(self.rect.center[1] - math.sin(math.radians(self.angle - 18)) * length)]
+        back_extension = 1.2
+        radius = 1
+        
+        # Front collision points
+        collision_point_front_right = [int(self.rect.center[0] + math.cos(math.radians(self.angle + parameters.car_params.collision_angle)) * length),
+                                     int(self.rect.center[1] - math.sin(math.radians(self.angle + parameters.car_params.collision_angle)) * length)]
+        collision_point_front_left = [int(self.rect.center[0] + math.cos(math.radians(self.angle - parameters.car_params.collision_angle)) * length),
+                                    int(self.rect.center[1] - math.sin(math.radians(self.angle - parameters.car_params.collision_angle)) * length)]
+        
+        # Back collision points
+        collision_point_back_right = [int(self.rect.center[0] - math.cos(math.radians(self.angle + parameters.car_params.collision_angle)) * length * back_extension),
+                                    int(self.rect.center[1] + math.sin(math.radians(self.angle + parameters.car_params.collision_angle)) * length * back_extension)]
+        collision_point_back_left = [int(self.rect.center[0] - math.cos(math.radians(self.angle - parameters.car_params.collision_angle)) * length * back_extension),
+                                   int(self.rect.center[1] + math.sin(math.radians(self.angle - parameters.car_params.collision_angle)) * length * back_extension)]
         
         # Die on Collision
-        if WINDOW.get_at(collision_point_right) == pygame.Color(2, 105, 31, 255) \
-                or WINDOW.get_at(collision_point_left) == pygame.Color(2, 105, 31, 255):
+        if (WINDOW.get_at(collision_point_front_right) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_front_left) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_back_right) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_back_left) == pygame.Color(2, 105, 31, 255)):
             self.alive = False
-
-        # Draw Collision Points
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_right, 6)
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_left, 6)
         
     def drive (self):
         self.rect.center += self.vel * 5
@@ -70,7 +103,8 @@ class Car (pygame.sprite.Sprite):
         x = int(self.rect.center[0])
         y = int(self.rect.center[1])
 
-        while True:  # Maximum radar length of 200 pixels
+        # Extend radars to boundary
+        while True:
             x = int(self.rect.center[0] + math.cos(math.radians(self.angle + radar_angle)) * length)
             y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
             
@@ -97,7 +131,7 @@ class Car (pygame.sprite.Sprite):
         self.radars.append([radar_angle, dist])
         
     def data(self):
-        input = [0] * 7
+        input = [0] * parameters.car_params.radar_count
         
         for i, radar in enumerate(self.radars):
             input[i] = int(radar[1])
