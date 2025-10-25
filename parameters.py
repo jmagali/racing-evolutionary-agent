@@ -32,7 +32,7 @@ class WindowParameters:
     def __init__ (self):
         self.width = 1244
         self.height = 1016
-        self.window = pygame.display.set_mode((self.width, self.height))
+        self.window = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
         self.track = pygame.image.load(os.path.join("assets", "track.png"))        
 
 # Global instances

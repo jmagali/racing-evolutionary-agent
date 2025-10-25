@@ -1,10 +1,11 @@
 import pygame, sys
 from button import Button
 from training import play_training
+import parameters
 
 pygame.init()
 
-SCREEN = pygame.display.set_mode((1244, 1016))
+SCREEN = parameters.window_params.window
 pygame.display.set_caption("Menu")
 
 BG = pygame.image.load("assets/Background.png")
@@ -79,6 +80,5 @@ def main_menu():
                     sys.exit()
 
         pygame.display.update()
-
 
 main_menu()
