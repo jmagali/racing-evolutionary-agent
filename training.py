@@ -28,6 +28,8 @@ def eval_genomes(genomes, config):
     from button import Button
 
     global cars, ge, networks
+    font = get_font(25)
+    
 
     cars = []
     ge = []
@@ -49,8 +51,10 @@ def eval_genomes(genomes, config):
                 sys.exit()
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                if TRAINING_BACK.checkForInput(MOUSE_POS):
                     main_menu()
+                    
+        winning_fitness = -1
 
         # Add the track to the buffer
         WINDOW.blit(TRACK, (0, 0))
@@ -76,6 +80,8 @@ def eval_genomes(genomes, config):
                 ge[i].fitness += 0.3
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
+            if ge[i].fitness > winning_fitness:
+                winning_fitness = ge[i].fitness
 
         # Update visuals
         for car in cars:
@@ -90,6 +96,20 @@ def eval_genomes(genomes, config):
         TRAINING_BACK.changeColor(MOUSE_POS)
         TRAINING_BACK.update(WINDOW)
 
+        # Display car parameters
+        speed_text = font.render(f'Speed: {parameters.car_params.velocity} m/s', False, (0, 0, 0))
+        WINDOW.blit(speed_text, (25,900))
+        rot_speed_text = font.render(f'Rotational Speed: {parameters.car_params.rotation_vel} rads/s', False, (0, 0, 0))
+        WINDOW.blit(rot_speed_text, (25,930))
+        radars_text = font.render(f'Radars: {parameters.car_params.radar_count}', False, (0, 0, 0))
+        WINDOW.blit(radars_text, (25,960))
+        
+        # Display training parameters
+        fitness_text = font.render(f'Max Fitness: {int(winning_fitness)}', False, (0, 0, 0))
+        WINDOW.blit(fitness_text, (750,900))
+        population_text = font.render(f'Population: {len(cars)}', False, (0, 0, 0))
+        WINDOW.blit(population_text, (750,930))
+        
         pygame.display.update()
 
 def run (config_path):
