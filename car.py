@@ -33,19 +33,33 @@ class Car (pygame.sprite.Sprite):
         
     def collision (self):
         length = 45
-        collision_point_right = [int(self.rect.center[0] + math.cos(math.radians(self.angle + 18)) * length),
-                                 int(self.rect.center[1] - math.sin(math.radians(self.angle + 18)) * length)]
-        collision_point_left = [int(self.rect.center[0] + math.cos(math.radians(self.angle - 18)) * length),
-                                int(self.rect.center[1] - math.sin(math.radians(self.angle - 18)) * length)]
+        back_extension = 1.2
+        radius = 1
+        
+        # Front collision points
+        collision_point_front_right = [int(self.rect.center[0] + math.cos(math.radians(self.angle + 18)) * length),
+                                     int(self.rect.center[1] - math.sin(math.radians(self.angle + 18)) * length)]
+        collision_point_front_left = [int(self.rect.center[0] + math.cos(math.radians(self.angle - 18)) * length),
+                                    int(self.rect.center[1] - math.sin(math.radians(self.angle - 18)) * length)]
+        
+        # Back collision points
+        collision_point_back_right = [int(self.rect.center[0] - math.cos(math.radians(self.angle + 18)) * length * back_extension),
+                                    int(self.rect.center[1] + math.sin(math.radians(self.angle + 18)) * length * back_extension)]
+        collision_point_back_left = [int(self.rect.center[0] - math.cos(math.radians(self.angle - 18)) * length * back_extension),
+                                   int(self.rect.center[1] + math.sin(math.radians(self.angle - 18)) * length * back_extension)]
         
         # Die on Collision
-        if WINDOW.get_at(collision_point_right) == pygame.Color(2, 105, 31, 255) \
-                or WINDOW.get_at(collision_point_left) == pygame.Color(2, 105, 31, 255):
+        if (WINDOW.get_at(collision_point_front_right) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_front_left) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_back_right) == pygame.Color(2, 105, 31, 255) or
+            WINDOW.get_at(collision_point_back_left) == pygame.Color(2, 105, 31, 255)):
             self.alive = False
 
         # Draw Collision Points
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_right, 6)
-        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_left, 6)
+        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_front_right, radius)
+        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_front_left, radius)
+        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_back_right, radius)
+        pygame.draw.circle(WINDOW, (0, 255, 255, 0), collision_point_back_left, radius)
         
     def drive (self):
         self.rect.center += self.vel * 5
