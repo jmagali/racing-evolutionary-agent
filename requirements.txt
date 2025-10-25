@@ -1,3 +1,2 @@
 pygame
 neat-python
-pygame-menu
