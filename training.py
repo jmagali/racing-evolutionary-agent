@@ -82,13 +82,13 @@ def eval_genomes(genomes, config):
             car.draw(WINDOW)
             car.update()
 
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+        MOUSE_POS = pygame.mouse.get_pos()
 
-        OPTIONS_BACK = Button(image=None, pos=(75, 50), text_input="BACK", font=get_font(25), base_color="Black",
-                              hovering_color="Green")
+        TRAINING_BACK = Button(image=None, pos=(75, 50), text_input="BACK", font=get_font(25), base_color="Black",
+                              hovering_color="Gray")
 
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(WINDOW)
+        TRAINING_BACK.changeColor(MOUSE_POS)
+        TRAINING_BACK.update(WINDOW)
 
         pygame.display.update()
 
