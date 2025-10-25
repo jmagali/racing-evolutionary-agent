@@ -11,7 +11,7 @@ TRACK = pygame.image.load(os.path.join("assets", "track.png"))
     
 car = pygame.sprite.GroupSingle(Car())
 
-def eval_genomes():
+def play():
     run = True
     
     while run:
@@ -37,10 +37,14 @@ def eval_genomes():
             car.sprite.direction = 1
         if user_input[pygame.K_LEFT]:
             car.sprite.direction = -1
-
-
+            
+        if not car.sprite.alive:
+            pygame.quit()
+            sys.exit()
+            break
+            
         car.draw(WINDOW)
         car.update()
         pygame.display.update()
         
-eval_genomes()
+play()
