@@ -21,7 +21,7 @@ class Car (pygame.sprite.Sprite):
         # Visuals
         self.org_img = pygame.image.load(os.path.join("assets", "car.png"))
         self.image = self.org_img
-        self.rect = self.image.get_rect(center=(490, 820))
+        self.rect = self.image.get_rect(center=(490, 730))
         
         # Movement
         self.vel = pygame.math.Vector2(parameters.car_params.velocity, 0)
