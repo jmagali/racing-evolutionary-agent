@@ -36,7 +36,7 @@ class WindowParameters:
         self.width = 1244
         self.height = 1016
         self.window = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
-        self.track = pygame.image.load(os.path.join("assets", "track.png"))        
+        self.track = pygame.image.load(os.path.join("assets", "track.png"))
 
 # Global instances
 car_params = CarParameters()

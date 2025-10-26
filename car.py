@@ -21,13 +21,20 @@ class Car (pygame.sprite.Sprite):
         # Visuals
         self.org_img = pygame.image.load(os.path.join("assets", "car.png"))
         self.image = self.org_img
-        self.rect = self.image.get_rect(center=(490, 730))
+        self.rect = self.image.get_rect(center=(490, 740))
         
         # Movement
-        self.vel = pygame.math.Vector2(parameters.car_params.velocity, 0)
+        #self.vel = pygame.math.Vector2(parameters.car_params.velocity, 0)
         self.angle = 0
-        self.rotation_vel = parameters.car_params.rotation_vel
-        self.direction = 0
+        #self.rotation_vel = parameters.car_params.rotation_vel
+        #self.direction = 0
+        self.distance = 0
+        self.speed = 0
+        self.position = [490, 740]
+        self.center = [int(self.position[0]) + self.rect.width / 2, int(self.position[1]) + self.rect.height / 2]
+        self.time = 0
+
+        self.set_speed = False
         
         # Misc
         self.alive = True
@@ -37,6 +44,10 @@ class Car (pygame.sprite.Sprite):
         self.calculate_radar_angles()
         
     def update (self):
+        if not self.set_speed:
+            self.speed = 20
+            self.set_speed = True
+
         self.radars.clear()
         self.drive()
         self.rotate()
@@ -80,22 +91,39 @@ class Car (pygame.sprite.Sprite):
             self.alive = False
         
     def drive (self):
-        self.rect.center += self.vel * 5
+        self.position[0] += math.cos(math.radians(360 - self.angle)) * self.speed
+        self.position[0] = max(self.position[0], 20)
+        self.position[0] = min(self.position[0], WIN_WIDTH - 120)
+
+        # Increase Distance and Time
+        self.distance += self.speed
+        self.time += 1
+
+        # Same For Y-Position
+        self.position[1] += math.sin(math.radians(360 - self.angle)) * self.speed
+        self.position[1] = max(self.position[1], 20)
+        self.position[1] = min(self.position[1], WIN_WIDTH - 120)
+
+        # Calculate New Center
+        self.center = [int(self.position[0]) + self.rect.width / 2, int(self.position[1]) + self.rect.height / 2]
+
+        self.rect.center = (int(self.center[0]), int(self.center[1]))
             
     def rotate (self):
         SIZE = 0.1
         
         # Calculate rotation
-        if self.direction == 1:
-            self.angle -= self.rotation_vel
-            self.vel.rotate_ip(self.rotation_vel)
-        if self.direction == -1:
-            self.angle += self.rotation_vel
-            self.vel.rotate_ip(-self.rotation_vel)
+        # if self.direction == 1:
+        #     self.angle -= self.rotation_vel
+        #     self.vel.rotate_ip(self.rotation_vel)
+        # if self.direction == -1:
+        #     self.angle += self.rotation_vel
+        #     self.vel.rotate_ip(-self.rotation_vel)
             
         # Display rotation
         self.image = pygame.transform.rotozoom(self.org_img, self.angle, SIZE)
-        self.rect = self.image.get_rect(center=self.rect.center)
+        #self.rect = self.image.get_rect(center=self.rect.center)4
+        self.rect = self.image.get_rect(center=(int(self.position[0]), int(self.position[1])))
         
     def radar(self, radar_angle):
         length = 0
@@ -103,7 +131,7 @@ class Car (pygame.sprite.Sprite):
         y = int(self.rect.center[1])
 
         # Extend radars to boundary
-        while length < 200:
+        while length < 300:
             x = int(self.rect.center[0] + math.cos(math.radians(self.angle + radar_angle)) * length)
             y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
             

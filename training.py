@@ -44,6 +44,8 @@ def eval_genomes(genomes, config):
         genome.fitness = 0
 
     run = True
+    # Simple Counter To Roughly Limit Time (Not Good Practice)
+    counter = 0
 
     while run:
         for event in pygame.event.get():
@@ -67,22 +69,42 @@ def eval_genomes(genomes, config):
         # End generation when no genomes are left
         if len(cars) == 0:
             break
-        
+
+        counter += 1
+        print(counter)
+        #if counter == 10 * 20:  # Stop After About 20 Seconds
+        #    break
+
         # Give fitness for positive qualities
         for i, car in enumerate(cars):
-            ge[i].fitness += 1
+            ge[i].fitness += car.sprite.distance / 50.0
             # Remove dead genomes
             if not car.sprite.alive:
                 remove(i)
 
         for i, car in enumerate(cars):
             output = networks[i].activate(car.sprite.data())
-            if output[0] > 0.7:
-                car.sprite.direction = 1
-            if output[1] > 0.7:
-                car.sprite.direction = -1
-            if output[0] <= 0.7 and output[1] <= 0.7:
-                car.sprite.direction = 0
+            choice = output.index(max(output))
+            if choice == 0:
+                car.sprite.angle += 10  # Left
+            elif choice == 1:
+                car.sprite.angle -= 10  # Right
+            elif choice == 2:
+                if (car.sprite.speed - 2 >= 12):
+                    car.sprite.speed -= 2  # Slow Down
+            else:
+                car.sprite.speed += 2  # Speed Up
+            # if output[0] > 0.7:
+            #     car.sprite.angle += 1
+            # if output[1] > 0.7:
+            #     car.sprite.angle -= 1
+            # if output[2] > 0.7:
+            #     if (car.sprite.speed - 2) >= 12:
+            #         car.sprite.speed -= 2
+            # if output[3] > 0.7:
+            #     car.sprite.speed += 2
+            # if output[0] <= 0.7 and output[1] <= 0.7:
+            #     car.sprite.angle += 0
             if ge[i].fitness > winning_fitness:
                 winning_fitness = ge[i].fitness
 
