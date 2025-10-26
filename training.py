@@ -79,10 +79,8 @@ def eval_genomes(genomes, config):
             output = networks[i].activate(car.sprite.data())
             if output[0] > 0.7:
                 car.sprite.direction = 1
-                ge[i].fitness += 0.3
             if output[1] > 0.7:
                 car.sprite.direction = -1
-                ge[i].fitness += 0.3
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
             if ge[i].fitness > winning_fitness:
