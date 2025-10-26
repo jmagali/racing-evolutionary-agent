@@ -55,8 +55,7 @@ def eval_genomes(genomes, config):
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                run = False
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if TRAINING_BACK.checkForInput(MOUSE_POS):
@@ -76,8 +75,6 @@ def eval_genomes(genomes, config):
             break
 
         counter += 1
-        #if counter == 10 * 20:  # Stop After About 20 Seconds
-        #    break
 
         # Give fitness for positive qualities
         for i, car in enumerate(cars):
@@ -98,6 +95,10 @@ def eval_genomes(genomes, config):
                     car.sprite.speed -= parameters.car_params.acceleration  # Slow Down
             else:
                 car.sprite.speed += parameters.car_params.acceleration  # Speed Up
+            
+            # The greater the time lived, the greater the fitness
+            ge[i].fitness += counter * 0.01
+            
             if ge[i].fitness > winning_fitness:
                 winning_fitness = ge[i].fitness
 
@@ -161,6 +162,9 @@ def run (config_path):
     pop.add_reporter(stats)
 
     pop.run(eval_genomes, GENERATAIONS)
+    
+    pygame.quit()
+    sys.exit()
     
 def play_training():
     local_dir = os.path.dirname(__file__)
