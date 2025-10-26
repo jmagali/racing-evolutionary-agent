@@ -11,7 +11,10 @@ import parameters
 global WIN_WIDTH
 global WIN_HEIGHT
 global WINDOW
-    
+
+global generation
+generation = 0
+
 WIN_WIDTH = parameters.window_params.width
 WIN_HEIGHT = parameters.window_params.height
 WINDOW = parameters.window_params.window   
@@ -28,13 +31,15 @@ def eval_genomes(genomes, config):
     from menu import get_font
     from button import Button
 
+    global generation
     global cars, ge, networks
     font = get_font(25)
-    
 
     cars = []
     ge = []
     networks = []
+    
+    generation += 1
     
     for _, genome in genomes:
         cars.append(pygame.sprite.GroupSingle(Car()))
@@ -71,7 +76,6 @@ def eval_genomes(genomes, config):
             break
 
         counter += 1
-        print(counter)
         #if counter == 10 * 20:  # Stop After About 20 Seconds
         #    break
 
@@ -86,25 +90,14 @@ def eval_genomes(genomes, config):
             output = networks[i].activate(car.sprite.data())
             choice = output.index(max(output))
             if choice == 0:
-                car.sprite.angle += 10  # Left
+                car.sprite.angle += parameters.car_params.angle  # Left
             elif choice == 1:
-                car.sprite.angle -= 10  # Right
+                car.sprite.angle -= parameters.car_params.angle  # Right
             elif choice == 2:
-                if (car.sprite.speed - 2 >= 12):
-                    car.sprite.speed -= 2  # Slow Down
+                if (car.sprite.speed - parameters.car_params.acceleration >= 12):
+                    car.sprite.speed -= parameters.car_params.acceleration  # Slow Down
             else:
-                car.sprite.speed += 2  # Speed Up
-            # if output[0] > 0.7:
-            #     car.sprite.angle += 1
-            # if output[1] > 0.7:
-            #     car.sprite.angle -= 1
-            # if output[2] > 0.7:
-            #     if (car.sprite.speed - 2) >= 12:
-            #         car.sprite.speed -= 2
-            # if output[3] > 0.7:
-            #     car.sprite.speed += 2
-            # if output[0] <= 0.7 and output[1] <= 0.7:
-            #     car.sprite.angle += 0
+                car.sprite.speed += parameters.car_params.acceleration  # Speed Up
             if ge[i].fitness > winning_fitness:
                 winning_fitness = ge[i].fitness
 
@@ -128,21 +121,26 @@ def eval_genomes(genomes, config):
         PARAMETER_BTN.update(WINDOW)
 
         # Display car parameters
-        speed_text = font.render(f'Speed: {parameters.car_params.velocity} m/s', False, (0, 0, 0))
-        WINDOW.blit(speed_text, (25,900))
-        rot_speed_text = font.render(f'Rotational Speed: {parameters.car_params.rotation_vel} rads/s', False, (0, 0, 0))
-        WINDOW.blit(rot_speed_text, (25,930))
+        acc_text = font.render(f'Acceleration: {parameters.car_params.acceleration} m/s^2', False, (0, 0, 0))
+        WINDOW.blit(acc_text, (25,900))
+        speed_text = font.render(f'Initial Speed: {parameters.car_params.velocity} m/s', False, (0, 0, 0))
+        WINDOW.blit(speed_text, (25,930))
+        angle_text = font.render(f'Rotation Angle: {parameters.car_params.angle}°', False, (0, 0, 0))
+        WINDOW.blit(angle_text, (25,960))
         
         # Display training parameters
         fitness_text = font.render(f'Max Fitness: {int(winning_fitness)}', False, (0, 0, 0))
         WINDOW.blit(fitness_text, (750,900))
         population_text = font.render(f'Population: {len(cars)}', False, (0, 0, 0))
         WINDOW.blit(population_text, (750,930))
+        generation_text = font.render(f'Generation: {generation}', False, (0, 0, 0))
+        WINDOW.blit(generation_text, (750,960))
         
         pygame.display.update()
 
 def run (config_path):
-    global pop
+    global pop, generation
+    generation = 0
     GENERATAIONS = 50
 
     config = neat.config.Config(

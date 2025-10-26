@@ -4,8 +4,9 @@ import os
 class CarParameters:
     def __init__(self):
         # Physics parameters
-        self.velocity = 0.8
-        self.rotation_vel = 5
+        self.velocity = 20
+        self.acceleration = 2
+        self.angle = 10
         
         # Collision parameters
         self.collision_radius = 45
@@ -14,9 +15,10 @@ class CarParameters:
         # Radar parameter
         self.radar_count = 5
     
-    def update(self, vel, rot):
+    def update(self, acc, vel, ang):
+        self.acceleration = acc
         self.velocity = vel
-        self.rotation_vel = rot
+        self.angle = ang
                 
 class NEATParameters:
     def __init__(self):

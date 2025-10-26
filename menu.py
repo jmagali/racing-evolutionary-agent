@@ -17,8 +17,9 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 def parameter_screen():
     input_active = [False, False, False, False]
     user_text = [
+        str(parameters.car_params.acceleration),
         str(parameters.car_params.velocity),
-        str(parameters.car_params.rotation_vel),
+        str(parameters.car_params.angle),
         str(parameters.neat_params.population_size)
     ]
 
@@ -26,6 +27,7 @@ def parameter_screen():
         pygame.Rect(500, 300, 200, 40),
         pygame.Rect(500, 360, 200, 40),
         pygame.Rect(500, 420, 200, 40),
+        pygame.Rect(500, 480, 200, 40),
     ]
 
     APPLY_BUTTON = Button(None, (640, 580), "APPLY", get_font(50), "Black", "Gray")
@@ -36,8 +38,9 @@ def parameter_screen():
         MOUSE_POS = pygame.mouse.get_pos()
 
         labels = [
-            "Velocity:",
-            "Rotation Speed:",
+            "Acceleration:",
+            "Initial Speed:",
+            "Rotation Angle:",
             "Population:"
         ]
 
@@ -68,11 +71,12 @@ def parameter_screen():
 
                 if APPLY_BUTTON.checkForInput(MOUSE_POS):
                     try:
-                        vel = float(user_text[0])
-                        rot = int(user_text[1])
-                        pop = int(user_text[2])
+                        acc = int(user_text[0])
+                        vel = int(user_text[1])
+                        ang = int(user_text[2])
+                        pop = int(user_text[3])
 
-                        parameters.car_params.update(vel, rot)
+                        parameters.car_params.update(acc, vel, ang)
                         parameters.neat_params.update(pop)
                         SCREEN.fill("black")
                         play_training()

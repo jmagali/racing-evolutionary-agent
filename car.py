@@ -29,12 +29,10 @@ class Car (pygame.sprite.Sprite):
         #self.rotation_vel = parameters.car_params.rotation_vel
         #self.direction = 0
         self.distance = 0
-        self.speed = 0
+        self.speed = parameters.car_params.velocity
         self.position = [490, 740]
         self.center = [int(self.position[0]) + self.rect.width / 2, int(self.position[1]) + self.rect.height / 2]
         self.time = 0
-
-        self.set_speed = False
         
         # Misc
         self.alive = True
@@ -44,10 +42,6 @@ class Car (pygame.sprite.Sprite):
         self.calculate_radar_angles()
         
     def update (self):
-        if not self.set_speed:
-            self.speed = 20
-            self.set_speed = True
-
         self.radars.clear()
         self.drive()
         self.rotate()
