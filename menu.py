@@ -96,14 +96,15 @@ def parameter_screen():
         pygame.display.update()
 
 def main_menu():
-    MENU_X = 640
+    MENU_X = 622
     MENU_Y = 300
     while True:
         SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(100).render("ML Racer", True, "#b68f40")
+        MENU_TEXT = get_font(45).render("Racing Evolutionary Agent", True, "white")
+        
         MENU_RECT = MENU_TEXT.get_rect(center=(MENU_X, MENU_Y))
 
         PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(MENU_X, MENU_Y+200),
