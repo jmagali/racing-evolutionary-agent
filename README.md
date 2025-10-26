@@ -1,7 +1,7 @@
 # racing-evolutionary-agent
 
 Train your own self-driving race car!  
-This game uses the **NEAT (NeuroEvolution of Augmenting Topologies)** algorithm to evolve neural networks capable of navigating a custom-designed race track. Tweak parameters, experiment with evolution, and watch each AI generation get better at cornering, avoiding walls, and maintaining speed.
+This game uses the **NEAT (NeuroEvolution of Augmenting Topologies)** algorithm to evolve neural networks capable of navigating a pre-designed race track. Tweak parameters, experiment with evolution, and watch each AI generation get better at cornering, avoiding walls, and maintaining speed.
 
 ## Features
 - AI driver learns automatically through evolution
