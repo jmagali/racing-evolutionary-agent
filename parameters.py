@@ -13,20 +13,23 @@ class CarParameters:
         
         # Radar parameter
         self.radar_count = 5
-        
+    
+    def update(self, vel, rot):
+        self.velocity = vel
+        self.rotation_vel = rot
+                
 class NEATParameters:
     def __init__(self):
         # Training Parameters
         self.population_size = 50
-        self.generations = 50
-        self.fitness_threshold = 1000
-        self.stagnation_threshold = 20
-        self.mutation_rate = 0.3
         
         # Network parameters
         self.num_inputs = car_params.radar_count
         self.num_outputs = 2  # Left/Right control
         self.num_hidden = 1
+        
+    def update(self, population):
+        self.population_size = population
         
 class WindowParameters:
     def __init__ (self):
