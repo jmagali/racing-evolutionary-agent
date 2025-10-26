@@ -55,7 +55,6 @@ class Car (pygame.sprite.Sprite):
             current += increment
             self.radar_angles.append(angle)
         
-        
     def collision (self):   
         length = 45
         back_extension = 1.2
@@ -104,7 +103,7 @@ class Car (pygame.sprite.Sprite):
         y = int(self.rect.center[1])
 
         # Extend radars to boundary
-        while True:
+        while length < 200:
             x = int(self.rect.center[0] + math.cos(math.radians(self.angle + radar_angle)) * length)
             y = int(self.rect.center[1] - math.sin(math.radians(self.angle + radar_angle)) * length)
             

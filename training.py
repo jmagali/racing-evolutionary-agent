@@ -24,6 +24,7 @@ def remove(index):
 
 def eval_genomes(genomes, config):
     from menu import main_menu
+    from menu import parameter_screen
     from menu import get_font
     from button import Button
 
@@ -53,6 +54,10 @@ def eval_genomes(genomes, config):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if TRAINING_BACK.checkForInput(MOUSE_POS):
                     main_menu()
+                    
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PARAMETER_BTN.checkForInput(MOUSE_POS):
+                    parameter_screen()
                     
         winning_fitness = -1
 
@@ -95,14 +100,18 @@ def eval_genomes(genomes, config):
 
         TRAINING_BACK.changeColor(MOUSE_POS)
         TRAINING_BACK.update(WINDOW)
+        
+        PARAMETER_BTN = Button(image=None, pos=(1000, 50), text_input="Change Parameters", font=get_font(25), base_color="Black",
+            hovering_color="Gray")
+        
+        PARAMETER_BTN.changeColor(MOUSE_POS)
+        PARAMETER_BTN.update(WINDOW)
 
         # Display car parameters
         speed_text = font.render(f'Speed: {parameters.car_params.velocity} m/s', False, (0, 0, 0))
         WINDOW.blit(speed_text, (25,900))
         rot_speed_text = font.render(f'Rotational Speed: {parameters.car_params.rotation_vel} rads/s', False, (0, 0, 0))
         WINDOW.blit(rot_speed_text, (25,930))
-        radars_text = font.render(f'Radars: {parameters.car_params.radar_count}', False, (0, 0, 0))
-        WINDOW.blit(radars_text, (25,960))
         
         # Display training parameters
         fitness_text = font.render(f'Max Fitness: {int(winning_fitness)}', False, (0, 0, 0))
@@ -123,9 +132,12 @@ def run (config_path):
         neat.DefaultStagnation,
         config_path
     )
+    
+    # Override config values with GUI entries
+    config.pop_size = parameters.neat_params.population_size
 
     pop = neat.Population(config)
-
+    
     pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     pop.add_reporter(stats)
