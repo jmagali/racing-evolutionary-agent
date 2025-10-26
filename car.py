@@ -25,9 +25,11 @@ class Car (pygame.sprite.Sprite):
         
         # Movement
         self.vel = pygame.math.Vector2(parameters.car_params.velocity, 0)
+        self.acceleration = parameters.car_params.acceleration
         self.angle = 0
         self.rotation_vel = parameters.car_params.rotation_vel
         self.direction = 0
+        self.distance = 0
         
         # Misc
         self.alive = True
@@ -40,6 +42,8 @@ class Car (pygame.sprite.Sprite):
         self.radars.clear()
         self.drive()
         self.rotate()
+        
+        self.distance += self.vel.x
         
         for radar_angle in self.radar_angles:
             self.radar(radar_angle)

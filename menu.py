@@ -18,6 +18,7 @@ def parameter_screen():
     input_active = [False, False, False, False]
     user_text = [
         str(parameters.car_params.velocity),
+        str(parameters.car_params.acceleration),
         str(parameters.car_params.rotation_vel),
         str(parameters.neat_params.population_size)
     ]
@@ -26,6 +27,7 @@ def parameter_screen():
         pygame.Rect(500, 300, 200, 40),
         pygame.Rect(500, 360, 200, 40),
         pygame.Rect(500, 420, 200, 40),
+        pygame.Rect(500, 480, 200, 40),
     ]
 
     APPLY_BUTTON = Button(None, (640, 580), "APPLY", get_font(50), "Black", "Gray")
@@ -36,7 +38,7 @@ def parameter_screen():
         MOUSE_POS = pygame.mouse.get_pos()
 
         labels = [
-            "Velocity:",
+            "Acceleration"
             "Rotation Speed:",
             "Population:"
         ]

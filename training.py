@@ -70,21 +70,24 @@ def eval_genomes(genomes, config):
         
         # Give fitness for positive qualities
         for i, car in enumerate(cars):
-            ge[i].fitness += 1
             # Remove dead genomes
             if not car.sprite.alive:
                 remove(i)
+            else:
+                ge[i].fitness += car.sprite.distance / 50
 
         for i, car in enumerate(cars):
             output = networks[i].activate(car.sprite.data())
             if output[0] > 0.7:
                 car.sprite.direction = 1
-                ge[i].fitness += 0.3
             if output[1] > 0.7:
                 car.sprite.direction = -1
-                ge[i].fitness += 0.3
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
+            if output[2] > 0.7:
+                car.sprite.vel = pygame.math.Vector2(car.sprite.vel.x + car.sprite.acceleration, 0)
+            if output[3] > 0.7:
+                car.sprite.vel = pygame.math.Vector2(car.sprite.vel.x - car.sprite.acceleration, 0)
             if ge[i].fitness > winning_fitness:
                 winning_fitness = ge[i].fitness
 
