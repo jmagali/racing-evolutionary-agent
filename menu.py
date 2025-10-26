@@ -95,7 +95,6 @@ def parameter_screen():
 
         pygame.display.update()
 
-
 def main_menu():
     MENU_X = 640
     MENU_Y = 300
